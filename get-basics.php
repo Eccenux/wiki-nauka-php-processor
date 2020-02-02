@@ -1,19 +1,30 @@
 <?php
+/**
+ * Get basic data from JSON.
+ */
 date_default_timezone_set('Europe/Warsaw');
 
 require_once './inc/Ticks.php';
 $ticks = new cTicks();
 
+//
+// Settings
+//
 $basePath = "../processor-io";
+$baseInputPath = "{$basePath}/000-009";
+$outputPath = "data_basics.sql";
 
-$basePath .= "/000-009";
-
-$totalRecords = 0;
+// progress info
 $infoStep = 1000;
+
+//
+// Parse/Dump
+//
+$totalRecords = 0;
 $stepsCount = 1;
 $ticks->pf_insTick('parse');
 $ticks->pf_insTick('parse-step-'.$stepsCount);
-foreach (glob("{$basePath}/**/*") as $filename) {
+foreach (glob("{$baseInputPath}/**/*") as $filename) {
 	//echo "$filename size " . filesize($filename) . "\n";
 	$json = json_decode (file_get_contents($filename));
 
@@ -46,6 +57,9 @@ foreach (glob("{$basePath}/**/*") as $filename) {
 $ticks->pf_endTick('parse-step-'.$stepsCount);
 $ticks->pf_endTick('parse');
 
+//
+// Info/summary
+//
 echo "\n";
 echo "\n[INFO] Total: $totalRecords.";
 
