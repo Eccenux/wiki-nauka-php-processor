@@ -4,8 +4,8 @@
  */
 date_default_timezone_set('Europe/Warsaw');
 
-require_once './inc/Ticks.php';
 require_once './inc/Parser.php';
+//require_once './inc/Ticks.php';
 //$ticks = new cTicks();
 
 //
@@ -25,6 +25,7 @@ $sql_head = "INSERT INTO naukowiec ("
 		. "np_id"
 		. ", imie1, imie2, nazwisko"
 		. ", glownyStopienNaukowy, pelenTytul"
+		. ", specjalnosci, klasyfikacjaKbn"
 	. ") VALUES"
 ;
 $sql = $sql_head;
@@ -37,6 +38,7 @@ $parser->parse($baseInputPath, function($json) {
 			. "{$json->id}"
 			. ", '{$json->imie1}', '{$json->imie2}', '{$json->nazwisko}'"
 			. ", '{$json->glownyStopienNaukowy}', '{$json->pelenTytul}'"
+			. ", '{$json->specjalnoscP}', '{$json->klasyfikacjaKbnP}'"
 		. "),"
 	;
 	$numAdded++;
