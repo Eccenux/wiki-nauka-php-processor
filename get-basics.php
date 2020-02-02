@@ -69,7 +69,7 @@ $parser->parse($baseInputPath, function($json) {
 
 	$sql = "("
 			. "{$json->id}"
-			. ", {$countUkonczoneStudia}, '".SqlGenerator::escape($pierwszeStudiaRok)."'"
+			. ", '".SqlGenerator::escape($pierwszeStudiaRok)."'"
 			. ", '".SqlGenerator::escape($json->imie1)."', '".SqlGenerator::escape($json->imie2)."', '".SqlGenerator::escape($json->nazwisko)."'"
 			. ", '".SqlGenerator::escape($json->glownyStopienNaukowy)."', '".SqlGenerator::escape($json->pelenTytul)."'"
 			. ", '".SqlGenerator::escape($json->specjalnoscP)."', '".SqlGenerator::escape($json->klasyfikacjaKbnP)."'"
