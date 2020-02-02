@@ -5,6 +5,7 @@
 date_default_timezone_set('Europe/Warsaw');
 
 require_once './inc/Parser.php';
+require_once './inc/SqlGenerator.php';
 //require_once './inc/Ticks.php';
 //$ticks = new cTicks();
 
@@ -31,7 +32,7 @@ $arrays = array(
 	"stopnieNaukowe",
 	"publikacje",
 );
-$sql_head = "\n\nINSERT INTO naukowiec ("
+$sqlHeader = "\n\nINSERT INTO naukowiec ("
 		. "np_id"
 		. "\n, pierwszeStudiaRokUkonczenia"
 		. "\n, imie1, imie2, nazwisko"
@@ -40,20 +41,21 @@ $sql_head = "\n\nINSERT INTO naukowiec ("
 		. "\n"
 ;
 foreach ($arrays as $key) {
-	$sql_head .= ", {$key}Count";
+	$sqlHeader .= ", {$key}Count";
 }
-$sql_head .= "\n) VALUES";
+$sqlHeader .= "\n) VALUES";
+
 
 //
 // Parse/Dump
 //
-$sql = "";
-file_put_contents($outputPath, "");	// clear
+$sqlGenerator = new SqlGenerator($sqlHeader, $outputPath);
+$sqlGenerator->clearFile();
 $numAdded = 0;
 $parser = new Parser();
 $parser->parse($baseInputPath, function($json) {
 	//var_export($json);
-	global $sql, $sql_head, $numAdded, $parser, $arrays, $outputPath;
+	global $sqlGenerator, $numAdded, $parser, $arrays;
 
 	$countUkonczoneStudia = 0;
 	$pierwszeStudiaRok = '';
@@ -65,7 +67,7 @@ $parser->parse($baseInputPath, function($json) {
 		}
 	}
 
-	$sql .= "\n("
+	$sql = "("
 			. "{$json->id}"
 			. ", {$countUkonczoneStudia}, '{$pierwszeStudiaRok}'"
 			. ", '{$json->imie1}', '{$json->imie2}', '{$json->nazwisko}'"
@@ -79,20 +81,15 @@ $parser->parse($baseInputPath, function($json) {
 			$sql .= ", 0";
 		}
 	}
-	$sql .= "),";
-	
+	$sql .= ")";
+
+	$sqlGenerator->appendRow($sql);
 	$numAdded++;
-	if ($numAdded > 1 && $numAdded%900 == 0) {
-		$sql = trim($sql, ',') . ";\nGO\n";
-		file_put_contents($outputPath, $sql_head.$sql);
-		$sql = "";
+	if ($numAdded > 10) {
 		//return FALSE;
 	}
 });
-if (!empty($sql)) {
-	$sql = trim($sql, ',') . ";\nGO\n";
-	file_put_contents($outputPath, $sql_head.$sql);
-}
+$sqlGenerator->dumpPortion();
 
 //
 // Info/summary
