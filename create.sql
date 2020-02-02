@@ -13,7 +13,7 @@ CREATE TABLE naukowiec (
 	nazwisko	varchar(200),
 	glownyStopienNaukowy	varchar(100),
 	pelenTytul	varchar(1000),
-	specjalnosci	varchar(1000),
+	specjalnosci	varchar(8000),
 	klasyfikacjaKbn	varchar(1000),
 
 	zatrudnienieCount int,
@@ -36,6 +36,7 @@ CREATE NONCLUSTERED INDEX edits_ean ON admin_pre_edits (edit_type, actor_id, pag
 --
 -- Test
 --
+/*
 INSERT INTO naukowiec (np_id
 , pierwszeStudiaRokUkonczenia
 , imie1, imie2, nazwisko
@@ -45,3 +46,4 @@ INSERT INTO naukowiec (np_id
 ) VALUES
 (123, '123', 'Kaja', '', 'D''Artagnan', 'prof.', 'prof. dr hab. inż.', 'geofizyka stosowana', 'górnictwo i geologia inżynierska', 2, 4, 2, 2, 1, 19, 0, 2)
 ;
+*/
