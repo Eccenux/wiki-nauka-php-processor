@@ -1,9 +1,8 @@
 <?php
 
-$basePath = "./io";
+$basePath = "../processor-io";
 
-//$basePath .= "/000-009";
-$basePath .= "/**";
+$basePath .= "/000-009";
 
 $totalRecords = 0;
 $infoStep = 1000;
