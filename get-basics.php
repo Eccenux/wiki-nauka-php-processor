@@ -3,6 +3,7 @@
  * Get basic data from JSON.
  */
 date_default_timezone_set('Europe/Warsaw');
+set_time_limit(0);
 
 require_once './inc/Parser.php';
 require_once './inc/SqlGenerator.php';
@@ -13,7 +14,8 @@ require_once './inc/SqlGenerator.php';
 // Settings
 //
 $basePath = "../processor-io";
-$baseInputPath = "{$basePath}/json/000-009";
+//$baseInputPath = "{$basePath}/json/000-009";
+$baseInputPath = "{$basePath}/json/**";
 $outputPath = "{$basePath}/data_basics.sql";
 
 // progress info
