@@ -102,6 +102,9 @@ class Parser
 	{
 		$pierwszeStudia = null;
 		foreach ($json->ukonczoneStudia as $studia) {
+			if (empty($studia->rokUkonczenia)) {
+				continue;
+			}
 			if ($pierwszeStudia == null) {
 				$pierwszeStudia = $studia;
 				continue;
