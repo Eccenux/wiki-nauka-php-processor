@@ -31,7 +31,7 @@ $arrays = array(
 	"stopnieNaukowe",
 	"publikacje",
 );
-$sql_head = "INSERT INTO naukowiec ("
+$sql_head = "\n\nINSERT INTO naukowiec ("
 		. "np_id"
 		. "\n, pierwszeStudiaRokUkonczenia"
 		. "\n, imie1, imie2, nazwisko"
@@ -47,12 +47,13 @@ $sql_head .= "\n) VALUES";
 //
 // Parse/Dump
 //
-$sql = $sql_head;
+$sql = "";
+file_put_contents($outputPath, "");	// clear
 $numAdded = 0;
 $parser = new Parser();
 $parser->parse($baseInputPath, function($json) {
 	//var_export($json);
-	global $sql, $numAdded, $parser, $arrays;
+	global $sql, $sql_head, $numAdded, $parser, $arrays, $outputPath;
 
 	$countUkonczoneStudia = 0;
 	$pierwszeStudiaRok = '';
@@ -81,11 +82,17 @@ $parser->parse($baseInputPath, function($json) {
 	$sql .= "),";
 	
 	$numAdded++;
-	if ($numAdded > 10) {
-		return FALSE;
+	if ($numAdded > 1 && $numAdded%900 == 0) {
+		$sql = trim($sql, ',') . ";\nGO\n";
+		file_put_contents($outputPath, $sql_head.$sql);
+		$sql = "";
+		//return FALSE;
 	}
 });
-echo $sql;
+if (!empty($sql)) {
+	$sql = trim($sql, ',') . ";\nGO\n";
+	file_put_contents($outputPath, $sql_head.$sql);
+}
 
 //
 // Info/summary
