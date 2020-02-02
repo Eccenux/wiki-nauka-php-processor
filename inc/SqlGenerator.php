@@ -2,6 +2,14 @@
 /**
  * Description of SqlGenerator
  *
+ * Usage:
+ * $sqlGenerator = new SqlGenerator($sqlHeader, $outputPath);
+ * $sqlGenerator->clearFile();		// this will init (clear) outputPath
+ * for (...) {
+ *	$sqlGenerator->appendRow($sql);	// this will regulary dump rows with `portionSize` as MAX rows.
+ * }
+ * $sqlGenerator->dumpPortion();	// this is required to dump final part of data.
+ *
  * @author Maciej Nux Jaros
  */
 class SqlGenerator
@@ -31,7 +39,9 @@ class SqlGenerator
 	/**
 	 * Append prepared SQL.
 	 *
-	 * Note! The SQL should be only in braces.
+	 * Note! The SQL should be only in braces (no comma at the end).
+	 *
+	 * Also note that this will dump portions of data to the output path.
 	 *
 	 * @param string $sql
 	 */
@@ -44,6 +54,9 @@ class SqlGenerator
 		}
 	}
 
+	/**
+	 * Dump data from internal buffer.
+	 */
 	public function dumpPortion() {
 		if (!$this->hasData) {
 			return;
@@ -55,4 +68,12 @@ class SqlGenerator
 		$this->hasData = false;
 	}
 
+	/**
+	 * Escape string (for MS SQL).
+	 */
+	public static function escape($value) {
+		return strtr($value, array(
+			'\'' => '\'\'',
+		));
+	}
 }

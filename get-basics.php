@@ -13,8 +13,8 @@ require_once './inc/SqlGenerator.php';
 // Settings
 //
 $basePath = "../processor-io";
-$baseInputPath = "{$basePath}/000-009";
-$outputPath = "data_basics.sql";
+$baseInputPath = "{$basePath}/json/000-009";
+$outputPath = "{$basePath}/data_basics.sql";
 
 // progress info
 $infoStep = 1000;
@@ -69,10 +69,10 @@ $parser->parse($baseInputPath, function($json) {
 
 	$sql = "("
 			. "{$json->id}"
-			. ", {$countUkonczoneStudia}, '{$pierwszeStudiaRok}'"
-			. ", '{$json->imie1}', '{$json->imie2}', '{$json->nazwisko}'"
-			. ", '{$json->glownyStopienNaukowy}', '{$json->pelenTytul}'"
-			. ", '{$json->specjalnoscP}', '{$json->klasyfikacjaKbnP}'"
+			. ", {$countUkonczoneStudia}, '".SqlGenerator::escape($pierwszeStudiaRok)."'"
+			. ", '".SqlGenerator::escape($json->imie1)."', '".SqlGenerator::escape($json->imie2)."', '".SqlGenerator::escape($json->nazwisko)."'"
+			. ", '".SqlGenerator::escape($json->glownyStopienNaukowy)."', '".SqlGenerator::escape($json->pelenTytul)."'"
+			. ", '".SqlGenerator::escape($json->specjalnoscP)."', '".SqlGenerator::escape($json->klasyfikacjaKbnP)."'"
 	;
 	foreach ($arrays as $key) {
 		if (!empty($json->$key) && is_array($json->$key)) {
