@@ -22,3 +22,18 @@ from naukowiec
 group by zatrudnienieCount
 order by zatrudnienieCount
 ;
+
+--
+-- Liczba profesorów (i innych stopni)
+--
+select count(*), profesuryCount
+from naukowiec
+where profesuryCount > 0
+group by profesuryCount
+;
+
+select count(*), glownyStopienNaukowy
+from naukowiec
+group by glownyStopienNaukowy
+order by glownyStopienNaukowy
+;
