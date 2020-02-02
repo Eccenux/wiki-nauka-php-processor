@@ -23,6 +23,7 @@ $infoStep = 1000;
 //
 $sql_head = "INSERT INTO naukowiec ("
 		. "np_id"
+		. ", countUkonczoneStudia, pierwszeStudiaRokUkonczenia"
 		. ", imie1, imie2, nazwisko"
 		. ", glownyStopienNaukowy, pelenTytul"
 		. ", specjalnosci, klasyfikacjaKbn"
@@ -33,16 +34,28 @@ $numAdded = 0;
 $parser = new Parser();
 $parser->parse($baseInputPath, function($json) {
 	//var_export($json);
-	global $sql, $numAdded;
+	global $sql, $numAdded, $parser;
+
+	$countUkonczoneStudia = 0;
+	$pierwszeStudiaRok = '';
+	if (!empty($json->ukonczoneStudia) && is_array($json->ukonczoneStudia)) {
+		$countUkonczoneStudia = count($json->ukonczoneStudia);
+		$pierwszeStudia = $parser->getPierwszeStudia($json);
+		if (is_object($pierwszeStudia)) {
+			$pierwszeStudiaRok = $pierwszeStudia->rokUkonczenia;
+		}
+	}
+
 	$sql .= "\n("
 			. "{$json->id}"
+			. ", {$countUkonczoneStudia}, '{$pierwszeStudiaRok}'"
 			. ", '{$json->imie1}', '{$json->imie2}', '{$json->nazwisko}'"
 			. ", '{$json->glownyStopienNaukowy}', '{$json->pelenTytul}'"
 			. ", '{$json->specjalnoscP}', '{$json->klasyfikacjaKbnP}'"
 		. "),"
 	;
 	$numAdded++;
-	if ($numAdded > 10) {
+	if ($numAdded > 50) {
 		return FALSE;
 	}
 });

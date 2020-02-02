@@ -78,6 +78,9 @@ class Parser
 		$this->ticks->pf_endTick('parse');
 	}
 
+	/**
+	 * Just dump some parser summary.
+	 */
 	public function dumpInfo() {
 		echo "\n";
 		echo "\n[INFO] Total: $this->totalRecords.";
@@ -87,6 +90,27 @@ class Parser
 		foreach ($arrTicks as $strTickName=>$intDurtation) {
 			echo sprintf("\n%s: %.4f", $strTickName, $intDurtation);
 		}
+	}
+
+	/**
+	 * Get 1st finished studies.
+	 * 
+	 * @param object $json
+	 * @return object|null
+	 */
+	public function getPierwszeStudia($json)
+	{
+		$pierwszeStudia = null;
+		foreach ($json->ukonczoneStudia as $studia) {
+			if ($pierwszeStudia == null) {
+				$pierwszeStudia = $studia;
+				continue;
+			}
+			if ($pierwszeStudia->rokUkonczenia > $studia->rokUkonczenia) {
+				$pierwszeStudia = $studia;
+			}
+		}
+		return $pierwszeStudia;
 	}
 
 }
