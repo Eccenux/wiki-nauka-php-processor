@@ -21,8 +21,30 @@ $infoStep = 1000;
 //
 // Parse/Dump
 //
+$sql_head = "INSERT INTO naukowiec ("
+		. "np_id"
+		. ", imie1, imie2, nazwisko"
+		. ", glownyStopienNaukowy, pelenTytul"
+	. ") VALUES"
+;
+$sql = $sql_head;
+$numAdded = 0;
 $parser = new Parser();
-$parser->parse($baseInputPath);
+$parser->parse($baseInputPath, function($json) {
+	//var_export($json);
+	global $sql, $numAdded;
+	$sql .= "\n("
+			. "{$json->id}"
+			. ", '{$json->imie1}', '{$json->imie2}', '{$json->nazwisko}'"
+			. ", '{$json->glownyStopienNaukowy}', '{$json->pelenTytul}'"
+		. "),"
+	;
+	$numAdded++;
+	if ($numAdded > 10) {
+		return FALSE;
+	}
+});
+echo $sql;
 
 //
 // Info/summary
