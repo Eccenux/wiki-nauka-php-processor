@@ -19,22 +19,40 @@ $outputPath = "data_basics.sql";
 $infoStep = 1000;
 
 //
-// Parse/Dump
+// Prepare header
 //
+$arrays = array(
+	"zatrudnienie",
+	"pelnioneFunkcje",
+	"czlonkostwo",
+	"ukonczoneStudia",
+	"profesury",
+	"praceBadawcze",
+	"stopnieNaukowe",
+	"publikacje",
+);
 $sql_head = "INSERT INTO naukowiec ("
 		. "np_id"
-		. ", countUkonczoneStudia, pierwszeStudiaRokUkonczenia"
-		. ", imie1, imie2, nazwisko"
-		. ", glownyStopienNaukowy, pelenTytul"
-		. ", specjalnosci, klasyfikacjaKbn"
-	. ") VALUES"
+		. "\n, pierwszeStudiaRokUkonczenia"
+		. "\n, imie1, imie2, nazwisko"
+		. "\n, glownyStopienNaukowy, pelenTytul"
+		. "\n, specjalnosci, klasyfikacjaKbn"
+		. "\n"
 ;
+foreach ($arrays as $key) {
+	$sql_head .= ", {$key}Count";
+}
+$sql_head .= "\n) VALUES";
+
+//
+// Parse/Dump
+//
 $sql = $sql_head;
 $numAdded = 0;
 $parser = new Parser();
 $parser->parse($baseInputPath, function($json) {
 	//var_export($json);
-	global $sql, $numAdded, $parser;
+	global $sql, $numAdded, $parser, $arrays;
 
 	$countUkonczoneStudia = 0;
 	$pierwszeStudiaRok = '';
@@ -52,10 +70,18 @@ $parser->parse($baseInputPath, function($json) {
 			. ", '{$json->imie1}', '{$json->imie2}', '{$json->nazwisko}'"
 			. ", '{$json->glownyStopienNaukowy}', '{$json->pelenTytul}'"
 			. ", '{$json->specjalnoscP}', '{$json->klasyfikacjaKbnP}'"
-		. "),"
 	;
+	foreach ($arrays as $key) {
+		if (!empty($json->$key) && is_array($json->$key)) {
+			$sql .= ", ".count($json->$key);
+		} else {
+			$sql .= ", 0";
+		}
+	}
+	$sql .= "),";
+	
 	$numAdded++;
-	if ($numAdded > 50) {
+	if ($numAdded > 10) {
 		return FALSE;
 	}
 });
